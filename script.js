@@ -37,7 +37,6 @@ function setTheme(t){
     root.style.setProperty("--primary",primary);
     localStorage.setItem("theme",t);
 }
-
 setTheme(localStorage.getItem("theme")||"green");
 
 /* POOL */
@@ -86,29 +85,39 @@ function spin(){
     })();
 }
 
+function normalize(v){
+    return String(v).trim();
+}
+
 function finalize(pool){
     let final;
-    let rig=$("rigValue").value.trim();
+    let rigRaw = $("rigValue").value;
+    let rig = normalize(rigRaw);
 
-    if($("rigMode").checked && rig){
-        if(type==="number" && mode==="range"){
-            let n=Number(rig);
-            if(pool.includes(n)) final=n;
-        }else{
-            if(pool.includes(rig)) final=rig;
+    if ($("rigMode").checked && rig) {
+
+        // chuẩn hoá pool
+        let normPool = pool.map(normalize);
+
+        let idx = normPool.indexOf(rig);
+
+        if (idx !== -1) {
+            final = pool[idx]; // giữ nguyên giá trị gốc
         }
     }
 
-    if(final===undefined)
-        final=pool[Math.floor(Math.random()*pool.length)];
+    if (final === undefined) {
+        final = pool[Math.floor(Math.random() * pool.length)];
+    }
 
-    let rec=(type==="number"?"🎉 ":"👤 ")+final;
-    output.innerText=final;
+    let rec = (type === "number" ? "🎉 " : "👤 ") + final;
+    output.innerText = final;
     history.push(rec);
-    localStorage.setItem("history",JSON.stringify(history));
+    localStorage.setItem("history", JSON.stringify(history));
     renderHistory();
     firework();
 }
+
 
 
 function resetHistory(){
