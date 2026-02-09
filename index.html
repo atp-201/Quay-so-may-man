@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Số May Mắn</title>
+<title>Số May Mắn / Quay Tên</title>
 
 <style>
 body{
@@ -11,7 +11,7 @@ body{
     background:#b9f5d6;
 }
 .container{
-    max-width:380px;
+    max-width:420px;
     margin:20px auto;
     background:#fff;
     border-radius:16px;
@@ -21,7 +21,7 @@ body{
 .tab{
     background:#6ee64d;
     border-radius:30px;
-    margin-bottom:20px;
+    margin-bottom:15px;
     text-align:center;
     color:#fff;
     font-weight:bold;
@@ -29,11 +29,17 @@ body{
 }
 .option{
     display:flex;
-    gap:20px;
+    gap:15px;
     margin-bottom:15px;
+    flex-wrap:wrap;
+}
+.option label{
+    display:flex;
+    align-items:center;
+    gap:6px;
 }
 .group{margin-bottom:15px;}
-.group input,.group select{
+.group input,.group select,.group textarea{
     width:100%;
     padding:10px;
     border-radius:8px;
@@ -61,12 +67,13 @@ body{
     font-size:52px;
     color:red;
     font-weight:bold;
+    word-break:break-word;
 }
 #history{
     margin-top:10px;
     font-size:14px;
     text-align:left;
-    max-height:120px;
+    max-height:140px;
     overflow:auto;
 }
 .hidden{display:none}
@@ -90,28 +97,46 @@ body{
 <body>
 
 <div class="container">
-    <div class="tab">SỐ MAY MẮN</div>
+    <div class="tab">SỐ MAY MẮN / QUAY TÊN</div>
 
+    <!-- CHỌN LOẠI -->
     <div class="option">
-        <label><input type="radio" name="mode" checked onclick="setMode('range')"> Chọn số</label>
-        <label><input type="radio" name="mode" onclick="setMode('list')"> Nhập số</label>
+        <label><input type="radio" name="type" checked onclick="setType('number')"> 🔢 Quay số</label>
+        <label><input type="radio" name="type" onclick="setType('name')"> 👤 Quay tên</label>
     </div>
 
-    <div id="rangeMode">
-        <div class="group">
-            <label>Từ số:</label>
-            <input type="number" id="min" value="1">
+    <!-- MODE NUMBER -->
+    <div id="numberMode">
+        <div class="option">
+            <label><input type="radio" name="mode" checked onclick="setMode('range')"> Khoảng</label>
+            <label><input type="radio" name="mode" onclick="setMode('list')"> Danh sách</label>
         </div>
-        <div class="group">
-            <label>Đến số:</label>
-            <input type="number" id="max" value="50">
+
+        <div id="rangeMode">
+            <div class="group">
+                <label>Từ số:</label>
+                <input type="number" id="min" value="1">
+            </div>
+            <div class="group">
+                <label>Đến số:</label>
+                <input type="number" id="max" value="50">
+            </div>
+        </div>
+
+        <div id="listMode" class="hidden">
+            <div class="group">
+                <label>Danh sách số:</label>
+                <input type="text" id="list" placeholder="01,25,130,888">
+            </div>
         </div>
     </div>
 
-    <div id="listMode" class="hidden">
+    <!-- MODE NAME -->
+    <div id="nameMode" class="hidden">
         <div class="group">
-            <label>Nhập số:</label>
-            <input type="text" id="list" placeholder="01,25,130,888">
+            <label>Danh sách tên (cách nhau bằng dấu phẩy):</label>
+            <textarea id="nameList" rows="4"
+                placeholder="Nguyễn Văn A, Trần Thị B, Lê Văn C"></textarea>
         </div>
     </div>
 
@@ -125,7 +150,7 @@ body{
     </div>
 
     <div class="button">
-        <button onclick="spin()">QUAY SỐ</button>
+        <button onclick="spin()">QUAY</button>
     </div>
 
     <div class="button">
@@ -133,24 +158,32 @@ body{
     </div>
 
     <div class="result">
-        <span id="output">00</span>
+        <span id="output">--</span>
         <div id="history"></div>
     </div>
 
     <!-- 🔐 RIG -->
     <div id="rigPanel" class="hidden" style="margin-top:10px;border-top:1px dashed #ccc;padding-top:10px">
         <label><input type="checkbox" id="rigMode"> Chế độ rig</label>
-        <input id="rigNumber" type="number" placeholder="Số đặt trước" style="width:100%;margin-top:6px">
+        <input id="rigValue" placeholder="Số hoặc Tên đặt trước"
+               style="width:100%;margin-top:6px">
     </div>
 </div>
 
 <audio id="bgMusic" src="spin.mp3" loop></audio>
 
 <script>
+let type="number";
 let mode="range";
 let history=JSON.parse(localStorage.getItem("history"))||[];
 const output=document.getElementById("output");
 const historyDiv=document.getElementById("history");
+
+function setType(t){
+    type=t;
+    numberMode.classList.toggle("hidden",t!=="number");
+    nameMode.classList.toggle("hidden",t!=="name");
+}
 
 function setMode(m){
     mode=m;
@@ -159,29 +192,32 @@ function setMode(m){
 }
 
 function renderHistory(){
-    historyDiv.innerHTML=history.map(n=>`🎉 ${n}`).join("<br>");
+    historyDiv.innerHTML=history.map(h=>h).join("<br>");
 }
 renderHistory();
 
 window.addEventListener("click",()=>bgMusic.play(),{once:true});
 
-/* LẤY DANH SÁCH SỐ HỢP LỆ */
 function getPool(){
-    if(mode==="range"){
-        let arr=[];
-        for(let i=+min.value;i<=+max.value;i++){
-            if(!history.includes(i)) arr.push(i);
+    if(type==="number"){
+        if(mode==="range"){
+            let arr=[];
+            for(let i=+min.value;i<=+max.value;i++){
+                if(!history.includes(`🎉 ${i}`)) arr.push(i);
+            }
+            return arr;
+        }else{
+            return list.value.split(",")
+                .map(x=>x.trim())
+                .filter(x=>x && !history.includes(`🎉 ${x}`));
         }
-        return arr;
     }else{
-        return list.value
-            .split(",")
-            .map(x=>parseInt(x.trim()))
-            .filter(n=>!isNaN(n) && !history.includes(n));
+        return nameList.value.split(",")
+            .map(x=>x.trim())
+            .filter(x=>x && !history.includes(`👤 ${x}`));
     }
 }
 
-/* PHÁO HOA */
 function firework(){
     for(let i=0;i<30;i++){
         let f=document.createElement("div");
@@ -196,62 +232,66 @@ function firework(){
     }
 }
 
-/* 🔥 QUAY TĂNG TỐC → CHẬM DẦN */
 function spin(){
     let pool=getPool();
     if(pool.length===0){
-        alert("Hết số!");
+        alert("Đã hết!");
         return;
     }
 
-    let totalTime=+time.value;
+    let total=+time.value;
     let start=performance.now();
-    let delay=30;          // lúc đầu rất nhanh
-    let maxDelay=220;      // càng về cuối càng chậm
+    let delay=30,maxDelay=220;
 
     function roll(){
-        let now=performance.now();
-        let progress=(now-start)/totalTime;
-        if(progress>1) progress=1;
-
-        // easing (tăng tốc → chậm dần)
-        delay = 30 + (maxDelay-30) * progress * progress;
-
-        output.innerText = pool[Math.floor(Math.random()*pool.length)];
-
-        if(progress < 1){
-            setTimeout(roll, delay);
-        }else{
-            finalize(pool);
-        }
+        let p=(performance.now()-start)/total;
+        if(p>1) p=1;
+        delay=30+(maxDelay-30)*p*p;
+        output.innerText=pool[Math.floor(Math.random()*pool.length)];
+        if(p<1) setTimeout(roll,delay);
+        else finalize(pool);
     }
     roll();
 }
 
 function finalize(pool){
     let final;
+    let rig = rigValue.value.trim();
 
-    if(rigMode.checked && rigNumber.value){
-        let r=parseInt(rigNumber.value);
-        if(pool.includes(r)) final=r;
-    }
-    if(final===undefined){
-        final=pool[Math.floor(Math.random()*pool.length)];
+    if(rigMode.checked && rig){
+        if(type === "number"){
+            if(mode === "range"){
+                rig = Number(rig);
+                if(pool.includes(rig)) final = rig;
+            }else{
+                // danh sách số → so sánh STRING
+                if(pool.includes(rig)) final = rig;
+            }
+        }else{
+            // quay tên → string
+            if(pool.includes(rig)) final = rig;
+        }
     }
 
-    output.innerText=final;
-    history.push(final);
-    localStorage.setItem("history",JSON.stringify(history));
+    if(final === undefined){
+        final = pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    let record = type==="number" ? `🎉 ${final}` : `👤 ${final}`;
+    output.innerText = final;
+    history.push(record);
+    localStorage.setItem("history", JSON.stringify(history));
     renderHistory();
     firework();
 }
+
 
 function resetHistory(){
     if(confirm("Xóa toàn bộ lịch sử?")){
         history=[];
         localStorage.removeItem("history");
         renderHistory();
-        output.innerText="00";
+        output.innerText="--";
     }
 }
 
