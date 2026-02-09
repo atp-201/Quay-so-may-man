@@ -1,131 +1,89 @@
-:root{
-    --bg1:#b9f5d6;
-    --bg2:#6ee64d;
-    --card:#ffffff;
-    --primary:#111;
-}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quay May Mắn</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    min-height:100vh;
-    background:linear-gradient(120deg,var(--bg1),var(--bg2));
-    background-size:200% 200%;
-    animation:bgMove 8s ease infinite;
-}
+<div class="container">
+    <div class="tab">QUAY MAY MẮN</div>
 
-@keyframes bgMove{
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
-}
+    <!-- THEME -->
+    <div class="theme-switch">
+        <div class="theme green" data-theme="green"></div>
+        <div class="theme purple" data-theme="purple"></div>
+        <div class="theme dark" data-theme="dark"></div>
+    </div>
 
-.container{
-    max-width:420px;
-    margin:20px auto;
-    background:var(--card);
-    border-radius:16px;
-    padding:20px;
-    box-shadow:0 15px 40px rgba(0,0,0,.15);
-}
+    <!-- TYPE -->
+    <div class="option">
+        <label><input type="radio" name="type" checked> 🔢 Quay số</label>
+        <label><input type="radio" name="type"> 👤 Quay tên</label>
+    </div>
 
-.tab{
-    background:var(--bg2);
-    border-radius:30px;
-    margin-bottom:15px;
-    text-align:center;
-    color:#fff;
-    font-weight:bold;
-    padding:10px;
-}
+    <!-- NUMBER -->
+    <div id="numberMode">
+        <div class="option">
+            <label><input type="radio" name="mode" checked> Khoảng</label>
+            <label><input type="radio" name="mode"> Danh sách</label>
+        </div>
 
-.theme-switch{
-    display:flex;
-    justify-content:center;
-    gap:10px;
-    margin-bottom:12px;
-}
+        <div id="rangeMode">
+            <div class="group">
+                <label>Từ số:</label>
+                <input type="number" id="min" value="1">
+            </div>
+            <div class="group">
+                <label>Đến số:</label>
+                <input type="number" id="max" value="50">
+            </div>
+        </div>
 
-.theme{
-    width:22px;height:22px;
-    border-radius:50%;
-    cursor:pointer;
-    border:2px solid #fff;
-    box-shadow:0 0 0 1px rgba(0,0,0,.2);
-}
+        <div id="listMode" class="hidden">
+            <div class="group">
+                <label>Danh sách số:</label>
+                <input type="text" id="list" placeholder="01,25,130,888">
+            </div>
+        </div>
+    </div>
 
-.theme.green{background:linear-gradient(45deg,#b9f5d6,#6ee64d)}
-.theme.purple{background:linear-gradient(45deg,#d9c6ff,#7c4dff)}
-.theme.dark{background:linear-gradient(45deg,#333,#000)}
+    <!-- NAME -->
+    <div id="nameMode" class="hidden">
+        <div class="group">
+            <label>Danh sách tên:</label>
+            <textarea id="nameList" rows="4"
+            placeholder="Nguyễn Văn A, Trần Thị B"></textarea>
+        </div>
+    </div>
 
-.option{
-    display:flex;
-    gap:15px;
-    margin-bottom:15px;
-    flex-wrap:wrap;
-}
+    <div class="group">
+        <label>Thời gian quay:</label>
+        <select id="time">
+            <option value="3000">3 giây</option>
+            <option value="5000" selected>5 giây</option>
+            <option value="10000">10 giây</option>
+        </select>
+    </div>
 
-.group{margin-bottom:15px;}
+    <div class="button"><button id="spinBtn">QUAY</button></div>
+    <div class="button"><button id="resetBtn" class="danger">Reset lịch sử</button></div>
 
-.group input,.group select,.group textarea{
-    width:100%;
-    padding:10px;
-    border-radius:8px;
-    border:1px solid #ccc;
-    font-size:16px;
-}
+    <div class="result">
+        <span id="output">--</span>
+        <div id="history"></div>
+    </div>
 
-.button button{
-    width:100%;
-    padding:14px;
-    font-size:18px;
-    border:none;
-    border-radius:30px;
-    background:var(--primary);
-    color:#fff;
-    cursor:pointer;
-}
+    <!-- RIG -->
+    <div id="rigPanel" class="hidden rig">
+        <label><input type="checkbox" id="rigMode"> Chế độ rig</label>
+        <input id="rigValue" placeholder="Số hoặc Tên đặt trước">
+    </div>
+</div>
 
-.button .danger{background:#e53935}
+<script src="script.js"></script>
+</body>
+</html>
 
-.result{
-    margin-top:15px;
-    background:#f8f8f8;
-    border-radius:12px;
-    padding:15px;
-    text-align:center;
-}
 
-.result span{
-    font-size:52px;
-    color:red;
-    font-weight:bold;
-    word-break:break-word;
-}
-
-#history{
-    margin-top:10px;
-    font-size:14px;
-    text-align:left;
-    max-height:140px;
-    overflow:auto;
-}
-
-.hidden{display:none}
-
-.firework{
-    position:fixed;
-    width:6px;height:6px;
-    border-radius:50%;
-    animation:explode 1s ease-out forwards;
-}
-
-@keyframes explode{
-    to{transform:translate(var(--x),var(--y));opacity:0;}
-}
-
-.rig{
-    margin-top:10px;
-    border-top:1px dashed #ccc;
-    padding-top:10px;
-}
