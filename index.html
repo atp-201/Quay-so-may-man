@@ -1,25 +1,128 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+    <meta charset="UTF-8">
+    <title>Số May Mắn / Quay Tên</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="tab">SỐ MAY MẮN / QUAY TÊN</div>
+
+    <!-- THEME -->
+    <div class="theme-switch">
+        <div class="theme green" data-theme="green"></div>
+        <div class="theme purple" data-theme="purple"></div>
+        <div class="theme dark" data-theme="dark"></div>
+    </div>
+
+    <!-- TYPE -->
+    <div class="option">
+        <label><input type="radio" name="type" checked> 🔢 Quay số</label>
+        <label><input type="radio" name="type"> 👤 Quay tên</label>
+    </div>
+
+    <!-- NUMBER -->
+    <div id="numberMode">
+        <div class="option">
+            <label><input type="radio" name="mode" checked> Khoảng</label>
+            <label><input type="radio" name="mode"> Danh sách</label>
+        </div>
+
+        <div id="rangeMode">
+            <div class="group">
+                <label>Từ số:</label>
+                <input type="number" id="min" value="1">
+            </div>
+            <div class="group">
+                <label>Đến số:</label>
+                <input type="number" id="max" value="50">
+            </div>
+        </div>
+
+        <div id="listMode" class="hidden">
+            <div class="group">
+                <label>Danh sách số:</label>
+                <input type="text" id="list" placeholder="01,25,130,888">
+            </div>
+        </div>
+    </div>
+
+    <!-- NAME -->
+    <div id="nameMode" class="hidden">
+        <div class="group">
+            <label>Danh sách tên:</label>
+            <textarea id="nameList" rows="4"
+            placeholder="Nguyễn Văn A, Trần Thị B"></textarea>
+        </div>
+    </div>
+
+    <div class="group">
+        <label>Thời gian quay:</label>
+        <select id="time">
+            <option value="3000">3 giây</option>
+            <option value="5000" selected>5 giây</option>
+            <option value="10000">10 giây</option>
+        </select>
+    </div>
+
+    <div class="button"><button id="spinBtn">QUAY</button></div>
+    <div class="button"><button id="resetBtn" class="danger">Reset lịch sử</button></div>
+
+    <div class="result">
+        <span id="output">--</span>
+        <div id="history"></div>
+    </div>
+
+    <!-- RIG -->
+    <div id="rigPanel" class="hidden rig">
+        <label><input type="checkbox" id="rigMode"> Chế độ rig</label>
+        <input id="rigValue" placeholder="Số hoặc Tên đặt trước">
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+
+
+<!-- <!DOCTYPE html>
+<html lang="vi">
+<head>
 <meta charset="UTF-8">
 <title>Số May Mắn / Quay Tên</title>
 
 <style>
+:root{
+    --bg1:#b9f5d6;
+    --bg2:#6ee64d;
+    --card:#ffffff;
+    --primary:#111;
+}
 body{
     margin:0;
-    font-family: Arial, sans-serif;
-    background:#b9f5d6;
+    font-family:Arial,sans-serif;
+    min-height:100vh;
+    background:linear-gradient(120deg,var(--bg1),var(--bg2));
+    background-size:200% 200%;
+    animation:bgMove 8s ease infinite;
+}
+@keyframes bgMove{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
 }
 .container{
     max-width:420px;
     margin:20px auto;
-    background:#fff;
+    background:var(--card);
     border-radius:16px;
     padding:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,.1);
+    box-shadow:0 15px 40px rgba(0,0,0,.15);
 }
 .tab{
-    background:#6ee64d;
+    background:var(--bg2);
     border-radius:30px;
     margin-bottom:15px;
     text-align:center;
@@ -27,6 +130,23 @@ body{
     font-weight:bold;
     padding:10px;
 }
+.theme-switch{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:12px;
+}
+.theme{
+    width:22px;height:22px;
+    border-radius:50%;
+    cursor:pointer;
+    border:2px solid #fff;
+    box-shadow:0 0 0 1px rgba(0,0,0,.2);
+}
+.theme.green{background:linear-gradient(45deg,#b9f5d6,#6ee64d)}
+.theme.purple{background:linear-gradient(45deg,#d9c6ff,#7c4dff)}
+.theme.dark{background:linear-gradient(45deg,#333,#000)}
+
 .option{
     display:flex;
     gap:15px;
@@ -52,7 +172,7 @@ body{
     font-size:18px;
     border:none;
     border-radius:30px;
-    background:#111;
+    background:var(--primary);
     color:#fff;
     cursor:pointer;
 }
@@ -80,16 +200,12 @@ body{
 
 .firework{
     position:fixed;
-    width:6px;
-    height:6px;
+    width:6px;height:6px;
     border-radius:50%;
     animation:explode 1s ease-out forwards;
 }
 @keyframes explode{
-    to{
-        transform:translate(var(--x),var(--y));
-        opacity:0;
-    }
+    to{transform:translate(var(--x),var(--y));opacity:0;}
 }
 </style>
 </head>
@@ -99,13 +215,17 @@ body{
 <div class="container">
     <div class="tab">SỐ MAY MẮN / QUAY TÊN</div>
 
-    <!-- CHỌN LOẠI -->
+    <div class="theme-switch">
+        <div class="theme green" onclick="setTheme('green')"></div>
+        <div class="theme purple" onclick="setTheme('purple')"></div>
+        <div class="theme dark" onclick="setTheme('dark')"></div>
+    </div>
+
     <div class="option">
         <label><input type="radio" name="type" checked onclick="setType('number')"> 🔢 Quay số</label>
         <label><input type="radio" name="type" onclick="setType('name')"> 👤 Quay tên</label>
     </div>
 
-    <!-- MODE NUMBER -->
     <div id="numberMode">
         <div class="option">
             <label><input type="radio" name="mode" checked onclick="setMode('range')"> Khoảng</label>
@@ -131,12 +251,12 @@ body{
         </div>
     </div>
 
-    <!-- MODE NAME -->
+
     <div id="nameMode" class="hidden">
         <div class="group">
-            <label>Danh sách tên (cách nhau bằng dấu phẩy):</label>
+            <label>Danh sách tên:</label>
             <textarea id="nameList" rows="4"
-                placeholder="Nguyễn Văn A, Trần Thị B, Lê Văn C"></textarea>
+            placeholder="Nguyễn Văn A, Trần Thị B"></textarea>
         </div>
     </div>
 
@@ -149,34 +269,26 @@ body{
         </select>
     </div>
 
-    <div class="button">
-        <button onclick="spin()">QUAY</button>
-    </div>
-
-    <div class="button">
-        <button onclick="resetHistory()" style="background:#e53935">Reset lịch sử</button>
-    </div>
+    <div class="button"><button onclick="spin()">QUAY</button></div>
+    <div class="button"><button onclick="resetHistory()" style="background:#e53935">Reset lịch sử</button></div>
 
     <div class="result">
         <span id="output">--</span>
         <div id="history"></div>
     </div>
 
-    <!-- 🔐 RIG -->
     <div id="rigPanel" class="hidden" style="margin-top:10px;border-top:1px dashed #ccc;padding-top:10px">
         <label><input type="checkbox" id="rigMode"> Chế độ rig</label>
         <input id="rigValue" placeholder="Số hoặc Tên đặt trước"
-               style="width:100%;margin-top:6px">
+        style="width:100%;margin-top:6px">
     </div>
 </div>
 
-<audio id="bgMusic" src="spin.mp3" loop></audio>
-
 <script>
-let type="number";
-let mode="range";
+let type="number",mode="range";
 let history=JSON.parse(localStorage.getItem("history"))||[];
-const output=document.getElementById("output");
+
+const output=outputEl=document.getElementById("output");
 const historyDiv=document.getElementById("history");
 
 function setType(t){
@@ -184,7 +296,6 @@ function setType(t){
     numberMode.classList.toggle("hidden",t!=="number");
     nameMode.classList.toggle("hidden",t!=="name");
 }
-
 function setMode(m){
     mode=m;
     rangeMode.classList.toggle("hidden",m!=="range");
@@ -192,38 +303,54 @@ function setMode(m){
 }
 
 function renderHistory(){
-    historyDiv.innerHTML=history.map(h=>h).join("<br>");
+    historyDiv.innerHTML=history.join("<br>");
 }
 renderHistory();
 
-window.addEventListener("click",()=>bgMusic.play(),{once:true});
+/* THEME */
+function setTheme(t){
+    const root=document.documentElement;
+    if(t==="green"){
+        root.style.setProperty("--bg1","#b9f5d6");
+        root.style.setProperty("--bg2","#6ee64d");
+        root.style.setProperty("--primary","#111");
+    }
+    if(t==="purple"){
+        root.style.setProperty("--bg1","#d9c6ff");
+        root.style.setProperty("--bg2","#7c4dff");
+        root.style.setProperty("--primary","#3f1dcb");
+    }
+    if(t==="dark"){
+        root.style.setProperty("--bg1","#111");
+        root.style.setProperty("--bg2","#333");
+        root.style.setProperty("--primary","#000");
+    }
+    localStorage.setItem("theme",t);
+}
+setTheme(localStorage.getItem("theme")||"green");
 
+/* POOL */
 function getPool(){
     if(type==="number"){
         if(mode==="range"){
-            let arr=[];
-            for(let i=+min.value;i<=+max.value;i++){
-                if(!history.includes(`🎉 ${i}`)) arr.push(i);
-            }
-            return arr;
-        }else{
-            return list.value.split(",")
-                .map(x=>x.trim())
-                .filter(x=>x && !history.includes(`🎉 ${x}`));
+            let a=[];
+            for(let i=+min.value;i<=+max.value;i++)
+                if(!history.includes("🎉 "+i)) a.push(i);
+            return a;
         }
-    }else{
-        return nameList.value.split(",")
-            .map(x=>x.trim())
-            .filter(x=>x && !history.includes(`👤 ${x}`));
+        return list.value.split(",").map(x=>x.trim())
+            .filter(x=>x&&!history.includes("🎉 "+x));
     }
+    return nameList.value.split(",").map(x=>x.trim())
+        .filter(x=>x&&!history.includes("👤 "+x));
 }
 
+/* FIREWORK */
 function firework(){
     for(let i=0;i<30;i++){
         let f=document.createElement("div");
         f.className="firework";
-        f.style.left="50%";
-        f.style.top="50%";
+        f.style.left="50%";f.style.top="50%";
         f.style.background=`hsl(${Math.random()*360},100%,50%)`;
         f.style.setProperty("--x",`${Math.random()*400-200}px`);
         f.style.setProperty("--y",`${Math.random()*400-200}px`);
@@ -232,76 +359,45 @@ function firework(){
     }
 }
 
+/* SPIN */
 function spin(){
     let pool=getPool();
-    if(pool.length===0){
-        alert("Đã hết!");
-        return;
-    }
+    if(!pool.length) return alert("Hết!");
+    let total=+time.value,start=performance.now();
 
-    let total=+time.value;
-    let start=performance.now();
-    let delay=30,maxDelay=220;
-
-    function roll(){
+    (function roll(){
         let p=(performance.now()-start)/total;
         if(p>1) p=1;
-        delay=30+(maxDelay-30)*p*p;
         output.innerText=pool[Math.floor(Math.random()*pool.length)];
-        if(p<1) setTimeout(roll,delay);
+        if(p<1) setTimeout(roll,30+200*p*p);
         else finalize(pool);
-    }
-    roll();
+    })();
 }
 
 function finalize(pool){
-    let final;
-    let rig = rigValue.value.trim();
-
-    if(rigMode.checked && rig){
-        if(type === "number"){
-            if(mode === "range"){
-                rig = Number(rig);
-                if(pool.includes(rig)) final = rig;
-            }else{
-                // danh sách số → so sánh STRING
-                if(pool.includes(rig)) final = rig;
-            }
-        }else{
-            // quay tên → string
-            if(pool.includes(rig)) final = rig;
-        }
-    }
-
-    if(final === undefined){
-        final = pool[Math.floor(Math.random() * pool.length)];
-    }
-
-    let record = type==="number" ? `🎉 ${final}` : `👤 ${final}`;
-    output.innerText = final;
-    history.push(record);
-    localStorage.setItem("history", JSON.stringify(history));
-    renderHistory();
-    firework();
+    let final,rig=rigValue.value.trim();
+    if(rigMode.checked && rig && pool.includes(type==="number"&&mode==="range"?Number(rig):rig))
+        final=type==="number"&&mode==="range"?Number(rig):rig;
+    if(final===undefined) final=pool[Math.floor(Math.random()*pool.length)];
+    let rec=(type==="number"?"🎉 ":"👤 ")+final;
+    output.innerText=final;
+    history.push(rec);
+    localStorage.setItem("history",JSON.stringify(history));
+    renderHistory(); firework();
 }
-
 
 function resetHistory(){
-    if(confirm("Xóa toàn bộ lịch sử?")){
-        history=[];
-        localStorage.removeItem("history");
-        renderHistory();
-        output.innerText="--";
+    if(confirm("Xóa lịch sử?")){
+        history=[];localStorage.removeItem("history");
+        renderHistory();output.innerText="--";
     }
 }
 
-/* 🔐 Ctrl + Alt + R */
 document.addEventListener("keydown",e=>{
-    if(e.ctrlKey && e.altKey && e.key.toLowerCase()==="r"){
+    if(e.ctrlKey&&e.altKey&&e.key==="r")
         rigPanel.classList.toggle("hidden");
-    }
 });
 </script>
-
 </body>
 </html>
+ -->
