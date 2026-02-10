@@ -150,12 +150,10 @@ document.addEventListener("keydown",e=>{
         $("rigPanel").classList.toggle("hidden");
 });
 
-// ===== CÁNH HOA RƠI (CHỈ HIỆN DỊP TẾT) =====
 (function () {
     const container = document.getElementById('petals-container');
     if (!container) return;
 
-    /* 🌸 CHỈ HIỆN DỊP TẾT (Tháng 1 – 2) */
     const month = new Date().getMonth() + 1;
     if (month < 1 || month > 2) return;
 
@@ -185,7 +183,6 @@ document.addEventListener("keydown",e=>{
     }
 })();
 
-/* ===== BÔNG TUYẾT RƠI (CHỈ HIỆN DỊP GIÁNG SINH) ===== */
 const snowContainer = document.getElementById('snow-container');
 
 function spawnSnow() {
