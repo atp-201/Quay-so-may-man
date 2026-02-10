@@ -207,12 +207,7 @@ body{
     font-size: 0.9rem;
     color: #555;
 }
-@media (max-width: 600px) {
-  .site-footer {
-    padding: 1rem;
-    font-size: 0.85rem;
-  }
-}
+
 /* hoa anh đào rơi */
 #petals-container {
     position: fixed;
@@ -266,6 +261,14 @@ body{
     transform: translateY(120vh);
   }
 }
+
+@media (max-width: 600px) {
+  .site-footer {
+    padding: 1rem;
+    font-size: 0.85rem;
+  }
+}
+
 
 
 
