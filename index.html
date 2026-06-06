@@ -1,95 +1,130 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="green">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Quay May Mắn</title>
-
-    <!-- QUAN TRỌNG: để hiển thị đúng trên điện thoại / tablet -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="container">
-    <div class="tab">QUAY MAY MẮN</div>
+<div class="container split-layout">
 
-    <!-- THEME -->
-    <div class="theme-switch">
-        <div class="theme green" data-theme="green"></div>
-        <div class="theme purple" data-theme="purple"></div>
-        <div class="theme dark" data-theme="dark"></div>
-    </div>
-
-    <!-- TYPE -->
-    <div class="option">
-        <label><input type="radio" name="type" checked> 🔢 Quay số</label>
-        <label><input type="radio" name="type"> 👤 Quay tên</label>
-    </div>
-
-    <!-- NUMBER -->
-    <div id="numberMode">
-        <div class="option">
-            <label><input type="radio" name="mode" checked> Khoảng</label>
-            <label><input type="radio" name="mode"> Danh sách</label>
+    <div class="left-panel">
+        <div class="header">
+            <h1>✦ Quay May Mắn ✦</h1>
+            <p>Lucky Spin · Random Picker</p>
         </div>
 
-        <div id="rangeMode">
-            <div class="group">
-                <label>Từ số:</label>
-                <input type="number" id="min" value="1">
-            </div>
-            <div class="group">
-                <label>Đến số:</label>
-                <input type="number" id="max" value="50">
+        <div class="theme-switch">
+            <div class="theme green active" data-theme="green" title="Xanh lá"></div>
+            <div class="theme purple" data-theme="purple" title="Tím"></div>
+            <div class="theme dark" data-theme="dark" title="Tối / Vàng"></div>
+        </div>
+
+        <div class="card" style="padding:6px">
+            <div class="type-tabs">
+                <div class="type-tab active" data-type="number">🔢 Quay số</div>
+                <div class="type-tab" data-type="name">👤 Quay tên</div>
             </div>
         </div>
 
-        <div id="listMode" class="hidden">
-            <div class="group">
-                <label>Danh sách số:</label>
-                <input type="text" id="list" placeholder="01,25,130,888">
+        <div id="numberMode">
+            <div class="card" style="padding:8px 10px">
+                <div class="mode-toggle" id="modeBtns">
+                    <button class="mode-btn active" data-mode="range">📏 Khoảng</button>
+                    <button class="mode-btn" data-mode="list">📋 Danh sách</button>
+                </div>
+            </div>
+
+            <div id="rangeMode" class="card">
+                <div class="count-row">
+                    <div class="group">
+                        <label>Từ số</label>
+                        <input type="number" id="min" value="1">
+                    </div>
+                    <div class="group">
+                        <label>Đến số</label>
+                        <input type="number" id="max" value="50">
+                    </div>
+                </div>
+            </div>
+
+            <div id="listMode" class="card hidden">
+                <div class="group" style="margin:0">
+                    <label>Danh sách số (cách bằng dấu phẩy)</label>
+                    <input type="text" id="list" placeholder="01, 25, 130, 888, ...">
+                </div>
+            </div>
+        </div>
+
+        <div id="nameMode" class="card hidden">
+            <div class="group" style="margin:0">
+                <label>Danh sách tên (cách bằng dấu phẩy)</label>
+                <textarea id="nameList" rows="3" placeholder="Nguyễn Văn A, Trần Thị B, Lê Văn C"></textarea>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="count-row">
+                <div class="group" style="margin:0">
+                    <label>Số lượng kết quả</label>
+                    <input type="number" id="count" value="1" min="1" max="20">
+                </div>
+                <div class="group" style="margin:0">
+                    <label>Thời gian quay</label>
+                    <select id="time">
+                        <option value="2000">2 giây</option>
+                        <option value="3000">3 giây</option>
+                        <option value="5000" selected>5 giây</option>
+                        <option value="10000">10 giây</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn btn-export" id="exportBtn">📥 Xuất TXT</button>
+            <button class="btn btn-danger" id="resetBtn">🗑 Reset lịch sử</button>
+        </div>
+
+        <div id="rigPanel" class="rig-panel hidden">
+            <label>
+                <input type="checkbox" id="rigMode">
+                ⚙️ Chế độ cài số trước
+            </label>
+            <input type="text" id="rigValue" placeholder="Nhập số hoặc tên muốn ra">
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <div class="card">
+            <div class="wheel-section">
+                <div class="wheel-pointer">▼</div>
+                <canvas id="wheelCanvas" width="300" height="300"></canvas>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" id="spinBtn">⚡ QUAY NGAY</button>
+
+        <div class="card result-card" style="margin-top:12px">
+            <div class="result-label">Kết quả</div>
+            <div class="result-values" id="resultValues">
+                <span style="color:var(--text-muted);font-size:14px">Nhấn QUAY để bắt đầu</span>
+            </div>
+
+            <div class="history-wrap">
+                <div class="history-label">📜 Lịch sử</div>
+                <div id="history"></div>
             </div>
         </div>
     </div>
 
-    <!-- NAME -->
-    <div id="nameMode" class="hidden">
-        <div class="group">
-            <label>Danh sách tên:</label>
-            <textarea id="nameList" rows="4"
-            placeholder="Nguyễn Văn A, Trần Thị B"></textarea>
-        </div>
-    </div>
-
-    <div class="group">
-        <label>Thời gian quay:</label>
-        <select id="time">
-            <option value="3000">3 giây</option>
-            <option value="5000" selected>5 giây</option>
-            <option value="10000">10 giây</option>
-        </select>
-    </div>
-
-    <div class="button"><button id="spinBtn">QUAY</button></div>
-    <div class="button"><button id="resetBtn" class="danger">Reset lịch sử</button></div>
-
-    <div class="result">
-        <span id="output">--</span>
-        <div id="history"></div>
-    </div>
-
-    <!-- RIG -->
-    <div id="rigPanel" class="hidden rig">
-        <label><input type="checkbox" id="rigMode"> Chế độ rig</label>
-        <input id="rigValue" placeholder="Số hoặc Tên đặt trước">
-    </div>
 </div>
+
 <div id="petals-container"></div>
 <div id="snow-container"></div>
 
 <script src="script.js"></script>
 </body>
 </html>
-
-
